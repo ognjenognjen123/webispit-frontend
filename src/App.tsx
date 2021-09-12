@@ -1,26 +1,69 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+    makeStyles,
+    Container,
+    Typography,
+    TextField,
+    Button,
+} from "@material-ui/core";
+import { useState } from "react";
+
+const useStyles = makeStyles((theme) => ({
+    heading: {
+        textAlign: "center",
+        margin: theme.spacing(1, 0, 4),
+    },
+    submitButton: {
+        marginTop: theme.spacing(4),
+    },
+}));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const { heading, submitButton } = useStyles();
+
+    const [json, setJson] = useState<string>();
+
+    return (
+        <Container maxWidth="xs">
+            <Typography className={heading} variant="h3">
+                Dobrodosli
+            </Typography>
+            <form>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    label="Email"
+                    fullWidth
+                    required
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    required
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={submitButton}
+                >
+                    Prijavi se
+                </Button>
+                {json && (
+                    <>
+                        <Typography variant="body1">
+                            Below is the JSON that would normally get passed to the server
+                            when a form gets submitted
+                        </Typography>
+                        <Typography variant="body2">{json}</Typography>
+                    </>
+                )}
+            </form>
+        </Container>
+    );
 }
 
 export default App;
