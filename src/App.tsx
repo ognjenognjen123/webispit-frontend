@@ -6,12 +6,19 @@ import {
     Button,
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 
 interface IFormInput {
     email: string;
     password: string;
 }
+
+const schema = yup.object().shape({
+    email: yup.string().required().email().max(255),
+    password: yup.string().required().max(255),
+});
 
 const useStyles = makeStyles((theme) => ({
     heading: {
@@ -27,7 +34,10 @@ function App() {
     const {
         register,
         handleSubmit,
-    } = useForm<IFormInput>();
+        formState: { errors },
+    } = useForm<IFormInput>({
+        resolver: yupResolver(schema),
+    });
 
     const { heading, submitButton } = useStyles();
 
@@ -48,6 +58,8 @@ function App() {
                     variant="outlined"
                     margin="normal"
                     label="Email"
+                    helperText={errors.email?.message}
+                    error={!!errors.email?.message}
                     fullWidth
                     required
                 />
@@ -56,6 +68,8 @@ function App() {
                     variant="outlined"
                     margin="normal"
                     label="Password"
+                    helperText={errors.password?.message}
+                    error={!!errors.password?.message}
                     type="password"
                     fullWidth
                     required
