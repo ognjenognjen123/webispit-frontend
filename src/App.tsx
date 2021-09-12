@@ -1,23 +1,17 @@
-import {
-    makeStyles,
-    Container,
-    Typography,
-    TextField,
-    Button,
-} from "@material-ui/core";
-import { useForm } from "react-hook-form";
+import {Button, Container, makeStyles, TextField, Typography,} from "@material-ui/core";
+import {useForm} from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {useState} from "react";
 
 interface IFormInput {
     email: string;
-    password: string;
+    lozinka: string;
 }
 
 const schema = yup.object().shape({
     email: yup.string().required().email().max(255),
-    password: yup.string().required().max(255),
+    lozinka: yup.string().required().max(255),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -34,17 +28,28 @@ function App() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
     } = useForm<IFormInput>({
         resolver: yupResolver(schema),
     });
 
-    const { heading, submitButton } = useStyles();
+    const {heading, submitButton} = useStyles();
 
     const [json, setJson] = useState<string>();
 
     const onSubmit = (data: IFormInput) => {
-        setJson(JSON.stringify(data));
+        const jsonData = JSON.stringify(data);
+        setJson(jsonData);
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: jsonData
+        };
+
+        fetch('http://localhost:3001/prijavi-osobu', requestOptions)
+            .then(response => response.json())
+            .then(data => console.log(data));
     };
 
     return (
@@ -64,12 +69,12 @@ function App() {
                     required
                 />
                 <TextField
-                    {...register("password")}
+                    {...register("lozinka")}
                     variant="outlined"
                     margin="normal"
                     label="Password"
-                    helperText={errors.password?.message}
-                    error={!!errors.password?.message}
+                    helperText={errors.lozinka?.message}
+                    error={!!errors.lozinka?.message}
                     type="password"
                     fullWidth
                     required
