@@ -5,7 +5,13 @@ import {
     TextField,
     Button,
 } from "@material-ui/core";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
+
+interface IFormInput {
+    email: string;
+    password: string;
+}
 
 const useStyles = makeStyles((theme) => ({
     heading: {
@@ -18,17 +24,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
+    const {
+        register,
+        handleSubmit,
+    } = useForm<IFormInput>();
+
     const { heading, submitButton } = useStyles();
 
     const [json, setJson] = useState<string>();
+
+    const onSubmit = (data: IFormInput) => {
+        setJson(JSON.stringify(data));
+    };
 
     return (
         <Container maxWidth="xs">
             <Typography className={heading} variant="h3">
                 Dobrodosli
             </Typography>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <TextField
+                    {...register("email")}
                     variant="outlined"
                     margin="normal"
                     label="Email"
@@ -36,6 +52,7 @@ function App() {
                     required
                 />
                 <TextField
+                    {...register("password")}
                     variant="outlined"
                     margin="normal"
                     label="Password"
